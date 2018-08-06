@@ -1,0 +1,78 @@
+﻿@model IEnumerable<EmployeeData_Core.Models.tblDepartment>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div ng-app="myApp">
+    <div ng-controller="myCtrl" ng-init="GetAllData()" class="divList">
+        <table class="table">
+            <tr>
+                <th>
+                    <label> Id</label>
+                </th>
+                <th>
+                    <label> Name</label>
+                </th>
+                <th>Action</th>
+            </tr>
+            <tr ng-repeat="_dep in Departments">
+                <td>
+                    {{_dep.id}}
+                </td>
+                <td>
+                    {{_dep.departmentName}}
+                </td>
+                <td>
+                    <input type="button" class="btn btn-warning" value="Update" ng-click="UpdateDepartment(_dep)" />
+                    <input type="button" class="btn btn-danger" value="Delete" ng-click="DeleteDepartment(_dep)" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
+<script>
+    var app = angular.module("myApp", []);
+    app.controller("myCtrl", function ($scope, $http, $window) {
+        $scope.GetAllData = function () {
+            $http({
+                method: "get",
+                url: "../Departments/GetAllData"
+            }).then(function (response) {
+                debugger
+                $scope.Departments = response.data;
+            }, function () {
+                alert("Something wen wrong Please try after sometimes!");
+            })
+        };
+        $scope.DeleteDepartment = function (_dep) {
+            $http({
+                method: "post",
+                url: "../Departments/Delete",
+                datatype: "json",
+                data: JSON.stringify(_dep)
+            }).then(function (response) {
+                debugger
+                if (response.data == "200") {
+                    alert("Success");
+                }
+                else if (response.data == "300") {
+                    alert("Something went wrong!")
+                }
+                else {
+                    alert("Error");
+                }
+                $scope.GetAllData();
+            })
+        };
+        $scope.UpdateDepartment = function (_dep) {
+            $window.location.href = '../Departments/Edit/' + _dep.id;
+        }
+    })
+</script>
