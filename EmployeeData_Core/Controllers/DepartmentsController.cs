@@ -20,6 +20,7 @@ namespace EmployeeData_Core.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var test = "";
             return View();
         }
 
